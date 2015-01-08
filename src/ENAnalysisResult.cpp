@@ -14,16 +14,15 @@ ENAnalysisResult::ENAnalysisResult(ofxJSONElement json){
     
     ofxJSONElement _segments = json["segments"];
     
-    cout << "# of segments "  << _segments.size() << endl;
+    ofLog(OF_LOG_NOTICE) << "# of total segments: "  << _segments.size();
     float totalTime = 0.0;
     for(unsigned int i = 0; i < _segments.size(); ++i)
     {
         float start  = _segments[i]["start"].asFloat();
         float duration  = _segments[i]["duration"].asFloat();
-        cout << "segment #" << i << ": " << start << " - " << duration << " - " << _segments[i]["confidence"] << endl;
+        ofLog(OF_LOG_VERBOSE) << "segment #" << i << ": " << start << " - " << duration << " - " << _segments[i]["confidence"] << endl;
         totalTime += duration;
     }
-    cout << "total time  " << totalTime << endl;
     
     // Filter segments with low confidence
     ofxJSONElement *segs = new ofxJSONElement();
@@ -47,18 +46,16 @@ ENAnalysisResult::ENAnalysisResult(ofxJSONElement json){
     }
     segments = segs;
     
-    cout << "<<<<<<<<<<<<<<<<<<<<" << endl;
-    cout << "# of segments " << segments->size() << endl;
+    ofLog(OF_LOG_NOTICE) << "# of segments with high confidence: " << segments->size() << endl;
     totalTime = 0.0;
     for(unsigned int i = 0; i < segments->size(); ++i)
     {        
         ofxJSONElement element = segments->get(i, NULL);
         float start  = element["start"].asFloat();
         float duration  = element["duration"].asFloat();
-        cout << "segment #" << i << ": " << start << " - " << duration << " - " << element["confidence"] << endl;
+        ofLog(OF_LOG_VERBOSE) << "segment #" << i << ": " << start << " - " << duration << " - " << element["confidence"];
         totalTime += duration;
     }
-    cout << "total time  " << totalTime << endl;
 }
 
 ENAnalysisResult::~ENAnalysisResult(){

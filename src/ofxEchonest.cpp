@@ -28,7 +28,6 @@ ofxEchonest::ofxEchonest(const std::string apiKey, const std::string consumerKey
 
 ofxEchonest::~ofxEchonest()
 {
-    cout << "~ofxEchonest() called" << endl;
     if (analysis) delete analysis;
 }
 
@@ -67,9 +66,7 @@ bool ofxEchonest::uploadAndAnalyze(string filepath){
     form->addInput("api_key", _echonestApiKey);
     
     // Add some form entries.
-//    string filepath = ofToDataPath(filename, true);
-    cout << "Start uploading..." << endl;
-    cout << filepath << endl;
+    ofLog(OF_LOG_VERBOSE) << "Start uploading...  " <<  filepath;
     form->addFile("track", filepath);  // curl
     
     // Perform the post.
@@ -77,17 +74,17 @@ bool ofxEchonest::uploadAndAnalyze(string filepath){
         form->post();
     }
     catch(ofxCurlException exception) {
-        cout << "OOPS.. something went wrong while posting " + exception.getMessage() << endl;
+        ofLog(OF_LOG_ERROR) << "OOPS.. something went wrong while posting " + exception.getMessage();
     }
     delete form;
     
     // Do something with the response from the post.
     vector<char> response_buf = form->getPostResponseAsBuffer();
     string response_str = form->getPostResponseAsString();
-    cout << "Size of response buffer: " << response_buf.size() << endl << endl;
-    cout << "Response string:" << endl;
-    cout << "-----------------" << endl;
-    cout << response_str <<endl;
+    ofLog(OF_LOG_VERBOSE) << "Size of response buffer: " << response_buf.size();
+    ofLog(OF_LOG_VERBOSE) << "Response string:";
+    ofLog(OF_LOG_VERBOSE) << "-----------------";
+    ofLog(OF_LOG_VERBOSE) << response_str;
     
     ofxJSONElement json;
     if (response_str.length() > 0){
@@ -134,7 +131,7 @@ bool ofxEchonest::waitUntilAnalysisFinishes(string md5){
             break;
         }
         if (count++ > 2){
-            cout << "Analysis Timeout" << endl;
+              ofLog(OF_LOG_ERROR) << "Analysis Timeout" << endl;
             break;
         }
         sleep(5);
@@ -146,9 +143,9 @@ bool ofxEchonest::getAudioAnalysis(string analysis_url){
     bool parsingSuccessful = json.open(analysis_url);
     if (parsingSuccessful)
     {
-        ofLogNotice("ofApp::audioAnalysis") << json.getRawString(true);
+        ofLogVerbose("Result of Echonest analysis: ") << json.getRawString(true);
 
-//        if (analysis != NULL) delete analysis;  // TODO: remove analysis
+        //        if (analysis != NULL) delete analysis;  // TODO: remove analysis
         analysis = new ENAnalysisResult(json);
         return true;
     } else {
