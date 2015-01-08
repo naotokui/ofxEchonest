@@ -16,13 +16,12 @@ class ENAnalysisResult{
     
 public:
     ENAnalysisResult(ofxJSONElement json);
+    ~ENAnalysisResult();
 
-    Json::Value getSegments();
-    
+    ofxJSONElement *getSegments();
+
 private:
-    Json::Value segments;
-    
-    
+    ofxJSONElement *segments;
 };
 
 #endif /* defined(__echonest__ENAnalysisResult__) */

@@ -44,7 +44,7 @@ bool ofxEchonest::isAPIKeySet(){
     return false;
 }
 
-
+/* Caution: this function does not return immediately */
 bool ofxEchonest::uploadAndAnalyze(string filepath){
     string apiUrl = kEchonestAPIBaseURL + "/track/upload";
 
@@ -148,7 +148,7 @@ bool ofxEchonest::getAudioAnalysis(string analysis_url){
     {
         ofLogNotice("ofApp::audioAnalysis") << json.getRawString(true);
 
-        if (analysis != NULL) delete analysis;
+//        if (analysis != NULL) delete analysis;  // TODO: remove analysis
         analysis = new ENAnalysisResult(json);
         return true;
     } else {
