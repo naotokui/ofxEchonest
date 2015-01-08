@@ -116,7 +116,7 @@ bool ofxEchonest::waitUntilAnalysisFinishes(string md5){
         bool parsingSuccessful = json.open(url);
         if (parsingSuccessful)
         {
-            ofLogNotice("waitUntilAnalysisFinishes") << json.getRawString(true);
+            ofLogVerbose("ofxEchonest::waitUntilAnalysisFinishes ") << json.getRawString(true);
             string analysis_url = json["response"]["track"]["audio_summary"]["analysis_url"].asString();
             if (analysis_url.length() > 0){
                 
@@ -143,13 +143,13 @@ bool ofxEchonest::getAudioAnalysis(string analysis_url){
     bool parsingSuccessful = json.open(analysis_url);
     if (parsingSuccessful)
     {
-        ofLogVerbose("Result of Echonest analysis: ") << json.getRawString(true);
+        ofLogVerbose("ofxEchonest::getAudioAnalysis ") << json.getRawString(true);
 
         //        if (analysis != NULL) delete analysis;  // TODO: remove analysis
         analysis = new ENAnalysisResult(json);
         return true;
     } else {
-        ofLogNotice("ofApp::audioAnalysis") << "Failed to parse JSON.";
+        ofLogError("ofApp::audioAnalysis") << "Failed to parse JSON.";
         return false;
     }
 }
