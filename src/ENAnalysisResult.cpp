@@ -8,7 +8,7 @@
 
 #include "ENAnalysisResult.h"
 
-static float kConfidenceThresh = 0.50;
+static float kConfidenceThresh = 0.90;
 
 ENAnalysisResult::ENAnalysisResult(ofxJSONElement json){
     
@@ -20,7 +20,7 @@ ENAnalysisResult::ENAnalysisResult(ofxJSONElement json){
     {
         float start  = _segments[i]["start"].asFloat();
         float duration  = _segments[i]["duration"].asFloat();
-        ofLog(OF_LOG_VERBOSE) << "segment #" << i << ": " << start << " - " << duration << " - " << _segments[i]["confidence"] << endl;
+        ofLog(OF_LOG_VERBOSE) << "segment #" << i << ": " << start << " - " << duration << " - " << _segments[i]["confidence"];
         totalTime += duration;
     }
     
