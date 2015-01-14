@@ -8,7 +8,7 @@
 
 #include "ENAnalysisResult.h"
 
-static float kConfidenceThresh = 0.90;
+static float kConfidenceThresh = 0.50;
 
 ENAnalysisResult::ENAnalysisResult(ofxJSONElement json){
     
