@@ -24,6 +24,8 @@ ofxEchonest::ofxEchonest(const std::string apiKey, const std::string consumerKey
     _echonestConsumerKey = consumerKey;
     
     analysis = NULL;
+    
+    ofAddListener(httpUtils.newResponseEvent,this,&ofxEchonest::newResponse);
 }
 
 ofxEchonest::~ofxEchonest()
@@ -34,19 +36,27 @@ ofxEchonest::~ofxEchonest()
 #pragma mark
 #pragma mark API CALL
 
+// spotifyId should be something like spotify:track:50IhWrjEoHJFFDrVpAcUus
+bool ofxEchonest::getSongProfile(string spotifyId){
+    string apiUrl = kEchonestAPIBaseURL + "/song/profile?api_key=" + _echonestApiKey + "&track_id="+ spotifyId + "&bucket=audio_summary";
+    httpUtils.getUrl(apiUrl);
+}
+
+void ofxEchonest::newResponse(ofxHttpResponse & response){
+    string responseStr = ofToString(response.status) + ": " + (string)response.responseBody;
+    ofLog(OF_LOG_NOTICE) << responseStr;
+    ofxJSONElement json;
+    json.parse(response.responseBody);
+    ofLog(OF_LOG_NOTICE) << json;
+}
+
 
 #pragma mark
-#pragma mark UTILITY
-
-bool ofxEchonest::isAPIKeySet(){
-    if (_echonestApiKey.length() > 0 && _echonestConsumerKey.length() > 0) return true;
-    return false;
-}
 
 /* Caution: this function does not return immediately */
 bool ofxEchonest::uploadAndAnalyze(string filepath){
     string apiUrl = kEchonestAPIBaseURL + "/track/upload";
-
+    
     // Checking audio file type based on the file extention
     string extention = filepath.substr(filepath.find_last_of(".") + 1);
     string filetype = "wav";
@@ -57,7 +67,7 @@ bool ofxEchonest::uploadAndAnalyze(string filepath){
         ofLogNotice("ofxEchonest", "Invalid file?");
         return;
     }
-
+    
     // Create a form.
     ofxCurl curl;
     ofxCurlForm* form = curl.createForm(apiUrl);
@@ -131,7 +141,7 @@ bool ofxEchonest::waitUntilAnalysisFinishes(string md5){
             break;
         }
         if (count++ > 2){
-              ofLog(OF_LOG_ERROR) << "Analysis Timeout" << endl;
+            ofLog(OF_LOG_ERROR) << "Analysis Timeout" << endl;
             break;
         }
         sleep(5);
@@ -144,7 +154,7 @@ bool ofxEchonest::getAudioAnalysis(string analysis_url){
     if (parsingSuccessful)
     {
         ofLogVerbose("ofxEchonest::getAudioAnalysis ") << json.getRawString(true);
-
+        
         //        if (analysis != NULL) delete analysis;  // TODO: remove analysis
         analysis = new ENAnalysisResult(json);
         return true;
@@ -161,3 +171,14 @@ bool ofxEchonest::hasAnalysisResult(){
 ENAnalysisResult* ofxEchonest::getAnalysisResult(){
     return analysis;
 }
+
+#pragma mark
+#pragma mark UTILITY
+
+bool ofxEchonest::isAPIKeySet(){
+    if (_echonestApiKey.length() > 0 && _echonestConsumerKey.length() > 0) return true;
+    return false;
+}
+
+
+

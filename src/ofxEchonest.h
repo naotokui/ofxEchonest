@@ -12,8 +12,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
-#include   "ofxJSON.h"
-#include   "ENAnalysisResult.h"
+#include "ofxJSON.h"
+#include "ENAnalysisResult.h"
+#include "ofxHttpUtils.h"
 
 class ofxEchonest
 {
@@ -28,8 +29,13 @@ public:
     bool hasAnalysisResult();
     ENAnalysisResult* getAnalysisResult();
     
+    bool getSongProfile(string spotifyId);
+    
 private:
     std::string _echonestApiKey, _echonestConsumerKey;
+    
+    ofxHttpUtils httpUtils;
+    void newResponse(ofxHttpResponse & response);
     
     ofxJSONElement json;
     ENAnalysisResult *analysis;
